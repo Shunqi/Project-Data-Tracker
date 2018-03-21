@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Project Data Tracker</title>
+{% load staticfiles %}
+    <!-- Bootstrap core CSS -->
+  	<link rel="icon" href={% static "pdt/favicon.ico" %} type="image/x-icon" />
+    <link href="{% static 'pdt/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'pdt/css/footer.css' %}" rel="stylesheet">
+    <link href="{% static 'pdt/css/developer_menu_css' %}" ref="stylesheet">
+    <script src="{% static 'pdt/js/jquery-1.11.3.min.js' %}"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+    <div style="width:100%;background-color:black">
+      <h3 style="color:#cccccc;text-align:center;padding:15px;margin:0px">Manager Main Menu</h1>
+    </div>
+    
+    <div class="" style="background-color:#cccccc;margin:0px">
+      <p style="text-align:center"> Name:<span id="name">{{name}}</span>&nbsp&nbsp&nbspID:<span id="ID">{{ID}}</span></p>
+    </div>
+    <div class="container">
+        <div class="row">
+          <div class="col-xs-4" style="margin-top:30px">
+            <div style="float:right">
+              <a href="/pdt/new_project/"><button class="btn btn-default btn-lg btn-block" id="Create" style="display:block;margin-top:30px">Create</button></a>
+              <button class="btn btn-default btn-lg btn-block" id="Edit" style="display:block;margin-top:30px">Edit</button>
+              <button class="btn btn-default btn-lg btn-block" id="Management" style="display:block;margin-top:30px">Management</button>
+              <button class="btn btn-default btn-lg btn-block" id="View_defects" style="display:block;margin-top:30px">View Defects</button>
+              <button class="btn btn-default btn-lg btn-block" id="Analysis" style="display:block;margin-top:30px">Analysis</button>
+            </div>
+          </div>
+        <div class="col-xs-8" style="text-align:center">
+          <h2>Projects</h2>
+            <select multiple class="form-control" id="project" style="height:400px;margin-top:10px">
+              {% for item in project %}
+              <option value="{{item.project_id}}">{{item.name}}</option>
+              {% endfor %}
+            </select>
+        </div>
+      </div>
+    </div>
+    <footer class="footer" style="background-color:#0080DB;padding:20px;width:100%;margin-top:15px;position:absolute;bottom:0px;text-align:center">
+        <a href="/pdt/logout"><button class="btn btn-default" style="margin-left:auto;margin-right:auto">Log Out</button></a>
+    </footer>
+    <script>
+      $("#Analysis").click(function(){
+        var value=document.getElementById("project").value;
+        if (value!=[])
+        window.location.href = "/pdt/analysis/"+value;
+        });
+      $("#Edit").click(function(){
+        var value=document.getElementById("project").value;
+        if (value!=[])
+        window.location.href = "/pdt/edit_project/"+value;
+        });
+      $("#View_defects").click(function(){
+        var value=document.getElementById("project").value;
+        if (value!=[])
+        window.location.href = "/pdt/view_defects/"+value;
+        });
+      $("#Management").click(function(){
+        var value=document.getElementById("project").value;
+        if (value!=[])
+        window.location.href = "/pdt/manage_project/"+value;
+        });
+    </script>
+  </body>

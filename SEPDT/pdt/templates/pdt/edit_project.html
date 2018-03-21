@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Project Data Tracker</title>
+{% load staticfiles %}
+    <!-- Bootstrap core CSS -->
+  	<link rel="icon" href={% static "pdt/favicon.ico" %} type="image/x-icon" />
+    <link href="{% static 'pdt/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'pdt/css/footer.css' %}" rel="stylesheet">
+    <link href="{% static 'pdt/css/developer_menu_css' %}" ref="stylesheet">
+    <script src="{% static 'pdt/js/jquery-1.11.3.min.js' %}"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+    <div style="width:100%;background-color:black">
+      <h3 style="color:#cccccc;text-align:center;padding:15px;margin:0px">Edit Project</h1>
+    </div>
+    
+    <div class="" style="background-color:#cccccc;margin:0px">
+      <p style="text-align:center"> Name:<span id="name">{{name}}</span>&nbsp&nbsp&nbspID:<span id="ID">{{ID}}</span></p>
+    </div>
+    <div class="container">
+        <div class="row">
+          <div class="col-xs-4" style="margin-top:30px">
+            <div style="float:right">
+              <button class="btn btn-default btn-lg btn-block" onclick="$('#add_form').slideToggle()" id="Add" style="display:block;margin-top:30px">Add Iteration</button>
+              <div id="add_form" style="text-align:center;display:none;">
+                <select id="phase" style="width:80%;margin:30px auto auto auto">
+                  {% for item in ph_list %}
+                    <option value="{{item.pk}}">{{item.get_phase_id_display}}</option>
+                  {% endfor %}
+                </select>
+                <input id="amount" type="number" class="form-control" style="width:80%;margin:30px auto auto auto" value=1>
+                <button class="btn btn-default btn-lg btn-block" id="Confirm" style="display:block;margin-top:30px;width:60%;margin:30px auto auto auto">Confirm</button>
+              </div>
+              <button class="btn btn-default btn-lg btn-block" id="Delete_Iteration" style="display:block;margin-top:30px">Delete Iteration</button>
+              <button class="btn btn-danger btn-lg btn-block" id="Delete_Project" style="display:block;margin-top:30px">Delete Project</button>
+            </div>
+          </div>
+        <div class="col-xs-8" style="text-align:center">
+          <h2>Iterations</h2>
+            <select multiple class="form-control" id="project" style="height:400px;margin-top:10px">
+              {% for item in delete_list %}
+              <option value="{{item.pk}}">{{item.phase.get_phase_id_display}} #{{item.iteration_id}}</option>
+              {% endfor %}
+            </select>
+        </div>
+      </div>
+    </div>
+    <footer class="footer" style="background-color:#0080DB;padding:20px;width:100%;margin-top:15px;position:absolute;bottom:0px;text-align:center">
+        <button class="btn btn-default" id="Return" style="margin-left:auto;margin-right:auto">Return</button>
+    </footer>
+    <script>
+      $('#Confirm').click(function(){
+        $.ajax({
+          type:"POST",
+          url:"/pdt/add_iteration/",  
+          data:{
+            'phase': $('#phase').val(),
+            'amount': $('#amount').val(),
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+          }, 
+          success:function(data){
+            alert(data);
+            location.reload();
+          },
+          error:function(xhr, textStatus, error){
+            alert("Request failed");
+            console.log(xhr.responseText);
+            console.log(textStatus);
+            console.log(error);
+          }
+          });
+      });
+      $("#Delete_Iteration").click(function(){
+        $.ajax({
+          type:"POST",
+          url:"/pdt/delete_iteration/",  
+          data:{
+            'iteration_pk_list': $('#project').val(),
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+          }, 
+          success:function(data){
+            alert(data);
+            location.reload();
+          },
+          error:function(xhr, textStatus, error){
+            alert("Request failed");
+            console.log(xhr.responseText);
+            console.log(textStatus);
+            console.log(error);
+          }
+          });
+      });
+      $("#Delete_Project").click(function(){
+        $.ajax({
+          type:"POST",
+          url:"/pdt/delete_project/",  
+          data:{
+            'pid': {{pid}},
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+          }, 
+          success:function(data){
+            alert(data);
+            window.location.href=("/pdt/manager_menu/");
+          },
+          error:function(xhr, textStatus, error){
+            alert("Request failed");
+            console.log(xhr.responseText);
+            console.log(textStatus);
+            console.log(error);
+          }
+          });
+      });
+      $("#Return").click(function(){
+        window.history.back();
+      });
+    </script>
+  </body>

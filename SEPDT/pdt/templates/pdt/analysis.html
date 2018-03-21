@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Project Data Tracker</title>
+{% load staticfiles %}
+    <!-- Bootstrap core CSS -->
+  	<link rel="icon" href={% static "pdt/favicon.ico" %} type="image/x-icon" />
+    <link href="{% static 'pdt/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'pdt/css/footer.css' %}" rel="stylesheet">
+    <link href="{% static 'pdt/css/developer_menu_css' %}" ref="stylesheet">
+    <script src="{% static 'pdt/js/jquery-1.11.3.min.js' %}"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+    <div style="width:100%;background-color:black">
+      <h3 style="color:#cccccc;text-align:center;padding:15px;margin:0px">Project Analysis</h1>
+    </div>
+    
+    <div class="" style="background-color:#cccccc;margin:0px">
+      <p style="text-align:center"> Name:<span id="name">{{name}}</span>&nbsp&nbsp&nbspID:<span id="ID">{{ID}}</span></p>
+    </div>
+    <div class="container">
+      <div class="row" style="text-align:center">
+        <h4 style="margin-top:20px;margin-bottom:3px">Project</h2>
+        <h1 style="margin-top:0px">{{ project.name }}</h1>
+        <div class="col-sm-3" style="border-width:0px 1px 0px 0px;border-style:solid">
+          <h3>Project Description</h3>
+          <p>{{ project.description }}</p>
+          <br>
+          <h3>Developers</h3>
+          <ul style="list-style-type:none;padding-left:0px">
+            {% for developer in developer_list %}
+				<li>{{ developer.name }}</li>
+			{% endfor %}
+          </ul>
+          <br>
+          <h3>Time Used</h3>
+          <p id="time_used">{{time_used}}<p>
+          <br>
+        </div>
+        <div class="col-sm-9">
+          <table class="table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>SLOC</th>
+                <th>Effort</th>
+                <th>Code_Effort</th>
+				<th>Defect Data Injected</th>
+				<th>Defect Data Removed</th>
+				<th>Inject Rate</th>
+				<th>Remove Rate</th>
+				<th>Defect Density</th>
+				<th>Yield</th>
+              </tr>
+            </thead>
+            <tbody>
+      {% for item in pro_m %}
+        <tr style="font-weight:bold">
+          <td>{{item.name}}</td>
+          <td>{{item.SLOC}}%</td>
+          <td>{{item.effort}}%</td>
+          <td>{{item.code_effort}}</td>
+          <td>{{item.inject_num}}</td>
+          <td>{{item.remove_num}}</td>
+          <td>{{item.inject_rate}}%</td>
+          <td>{{item.remove_rate}}%</td>
+          <td>{{item.defect_density}}%</td>
+          <td>{{item.m_yield}}%</td>
+        </tr>
+      {% endfor %}
+			{% for ph, itl in pha_m.items %}
+        <tr style="font-weight:bold">
+            <td>{{ph.name}}</td>
+            <td>{{ph.SLOC}}%</td>
+            <td>{{ph.effort}}%</td>
+            <td>{{ph.code_effort}}</td>
+            <td>{{ph.inject_num}}</td>
+            <td>{{ph.remove_num}}</td>
+            <td>{{ph.inject_rate}}%</td>
+            <td>{{ph.remove_rate}}%</td>
+            <td>{{ph.defect_density}}%</td>
+            <td>{{ph.m_yield}}%</td>
+          </tr>
+        {% for i in itl %}
+          <tr>
+            <td>Iteration #{{i.name}}</td>
+            <td>{{i.SLOC}}%</td>
+            <td>{{i.effort}}%</td>
+            <td>{{i.code_effort}}</td>
+            <td>{{i.inject_num}}</td>
+            <td>{{i.remove_num}}</td>
+            <td>{{i.inject_rate}}%</td>
+            <td>{{i.remove_rate}}%</td>
+            <td>{{i.defect_density}}%</td>
+            <td>{{i.m_yield}}%</td>
+          </tr>
+        {% endfor %}
+			{% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div style="height:300px"></div>
+    <footer class="footer" style="background-color:#0080DB;padding:20px;width:100%;margin-top:15px;position:absolute;bottom:0px;text-align:center">
+        <button class="btn btn-default" id="return_button" onclick="jump()" style="margin-left:auto;margin-right:auto">Return</button>
+    </footer>
+    <script>
+      function jump(){
+        window.location.href = '/pdt/manager_menu';
+        }
+    </script>
+    <script>
+      $(document).ready(function(){
+        var timer={{time_used}};
+        var nday=Math.floor(timer/86400);
+        var nhour=Math.floor(timer%86400/3600);
+        var nmin=Math.floor((timer%3600)/60);
+        var nsec=(timer%3600)%60;
+        if (nday==0) nday = ""; else nday = nday + " day ";
+        if (nhour==0) nhour = ""; else nhour = nhour + " hour ";
+        nmin = nmin + " min";
+        time_used = nday+nhour+nmin;
+        document.getElementById('time_used').innerHTML=time_used;
+      });
+    </script>
+  </body>

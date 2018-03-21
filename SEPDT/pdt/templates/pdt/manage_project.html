@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Project Data Tracker</title>
+{% load staticfiles %}
+    <!-- Bootstrap core CSS -->
+  	<link rel="icon" href={% static "pdt/favicon.ico" %} type="image/x-icon" />
+    <link href="{% static 'pdt/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'pdt/css/footer.css' %}" rel="stylesheet">
+    <link href="{% static 'pdt/css/developer_menu_css' %}" ref="stylesheet">
+    <script src="{% static 'pdt/js/jquery-1.11.3.min.js' %}"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+    <div style="width:100%;background-color:black">
+      <h3 style="color:#cccccc;text-align:center;padding:15px;margin:0px">Project Management</h1>
+    </div>
+    
+    <div class="" style="background-color:#cccccc;margin:0px">
+      <p style="text-align:center"> Name:<span id="name">{{name}}</span>&nbsp&nbsp&nbspID:<span id="ID">{{ID}}</span></p>
+    </div>
+    <div class="container">
+        <div class="row">
+          <div class="col-xs-3" style="margin-top:40px">
+            <div style="float:right">
+              <button class="btn btn-default btn-lg btn-block" id="Codesize" style="display:block;margin-top:30px">Code Size</button>
+              <button class="btn btn-default btn-lg btn-block" id="Close" style="display:block;margin-top:30px">Close Current Iteration</button>
+            </div>
+          </div>
+        <div class="col-xs-5" style="text-align:center">
+          <h2>Iterations</h2>
+            <select multiple class="form-control" id="project" style="height:400px;margin-top:10px">
+              {% for item in before_it_list %}
+                <option value="{{item.pk}}" style="background-color:#ffff00">{{item.phase.get_phase_id_display}} #{{item.iteration_id}}</option>
+              {% endfor %}
+              {% for item in current_it_list %}
+                <option value="{{item.pk}}" style="background-color:#66ff66">{{item.phase.get_phase_id_display}} #{{item.iteration_id}}</option>
+              {% endfor %}
+              {% for item in after_it_list %}
+                <option value="{{item.pk}}">{{item.phase.get_phase_id_display}} #{{item.iteration_id}}</option>
+              {% endfor %}
+            </select>
+        </div>
+        <div class="col-xs-4" style="text-align:center;margin-top:60px">
+          <h4><b>Project name</b></h4>
+          <p>{{project.name}}</p>
+          <h4><b>Description</b></h4>
+          <p>{{project.description}}</p>
+          <h4><b>Current Iteration</b></h4>
+          <p>
+            {% for item in current_it_list %}
+              {{item.phase.get_phase_id_display}} #{{item.iteration_id}}
+            {% endfor %}
+          </p>
+          <h4><b>Developer</b></h4>
+          <ul style="list-style-type:none;padding-left:0px">
+            {% for item in developer_list %}
+              <li>{{item.user.username}}</li>
+            {% endfor %}
+          </ul>
+          <h4><b>Time Used</b></h4>
+          <p id="time_used"></p>
+          <h4><b>Code Size</b></h4>
+          <p>{{code_size}}</p>
+        </div>
+      </div>
+    </div>
+    <footer class="footer" style="background-color:#0080DB;padding:20px;width:100%;margin-top:15px;position:absolute;bottom:0px;text-align:center">
+        <button class="btn btn-default" style="margin-left:auto;margin-right:auto" onclick="window.history.back()">Return</button>
+    </footer>
+    <script>
+    function isNumber(obj) { return !isNaN(parseFloat(obj)) }
+    var pid={{project.project_id}}
+      $('#Codesize').click(function(){
+        var select = $('#project').val().length;
+        if(select==1){
+          var codesize=prompt("Please input codesize");
+          if(isNumber(codesize)){
+            $.ajax({
+              type:"POST",
+              url:"/pdt/set_code_size/",  
+              data:{
+                'iteration_pk': $('#project').val()[0],
+                'code_size': codesize,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+              }, 
+              success:function(data){
+                alert(data);
+                location.reload();
+              },
+              error:function(xhr, textStatus, error){
+                alert("Set failed");
+                console.log(xhr.responseText);
+                console.log(textStatus);
+                console.log(error);
+              }
+            });
+          }
+          else{
+            alert("Please input number!");
+          }
+        }
+        else{
+          alert("Please select exactly one project");
+        }
+      });
+      $('#Close').click(function(){
+        $.ajax({
+          type:"POST",
+          url:"/pdt/close_iteration/"+pid+"/",  
+          data:{
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+          }, 
+          success:function(data){
+            alert(data);
+            location.reload();
+          },
+          error:function(xhr, textStatus, error){
+            alert("Stop failed");
+            console.log(xhr.responseText);
+            console.log(textStatus);
+            console.log(error);
+          }
+          });
+      });
+    </script>
+    <script>
+    $(document).ready(function(){
+        var timer={{time}};
+        var nday=Math.floor(timer/86400);
+        var nhour=Math.floor(timer%86400/3600);
+        var nmin=Math.floor((timer%3600)/60);
+        var nsec=(timer%3600)%60;
+        if (nday==0) nday = ""; else nday = nday + " day ";
+        if (nhour==0) nhour = ""; else nhour = nhour + " hour ";
+        nmin = nmin + " min";
+        time_used = nday+nhour+nmin;
+        document.getElementById('time_used').innerHTML=time_used;
+      });
+    </script>
+  </body>

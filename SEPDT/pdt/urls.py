@@ -1,0 +1,35 @@
+from django.conf.urls import url
+
+from . import views
+
+urlpatterns = [
+    #url(r'^$', views.index, name='index'),
+    url(r'^new_project/$', views.new_project, name='new_project'),
+    url(r'^create_project/$', views.create_project, name='create_project'),
+    url(r'^edit_project/(?P<pid>[0-9]+)/$', views.edit_project, name='edit_project'),
+    url(r'^manage_project/(?P<pid>[0-9]+)/$', views.manage_project, name='edit_project'),
+    url(r'^new_defect_removal/(?P<pid>[0-9]+)/$', views.new_defect_removal, name='new_data_removal'),
+    url(r'^defect_removal/$', views.defect_removal, name='defect_removal'),
+    url(r'^defect_update/$', views.defect_data_update, name='defect_update'),
+    url(r'^development/(?P<pid>[0-9]+)/$', views.development, name='development'),
+    url(r'^defect_data_list/(?P<pid>[0-9]+)/$', views.defect_data_list, name='defect_data_list'),
+    url(r'^defect_data_info/(?P<did>[0-9]+)/$', views.defect_data_info, name='defect_data_list'),
+    url(r'^analysis/(?P<pid>[0-9]+)/$',views.analysis, name='analysis'),
+    url(r'^updatetime/$', views.updateTime, name='updateTime'),
+#    url(r'^(?P<id>[0-9]+)/$', views.showDetail, name='showDetail'),
+#    url(r'^(?P<id>[0-9]+)/d/$', views.showDeveloper, name='showDeveloper'),
+#    url(r'^(?P<id>[0-9]+)/cs/$', views.showCodeSize, name='showCodeSize'),
+#    url(r'^(?P<id>[0-9]+)/(?P<did>[0-9]+)/ddn/$', views.showDefectData, name='showDefectData'),
+    url(r'^manager_menu/$', views.manager_menu, name='manager_menu'),
+	url(r'^developer_menu/$',views.developer_menu, name='developer_menu'),
+    url(r'^login/$', views.userlogin, name='login'),
+    url(r'^$', views.userlogin, name='login_default'),
+    url(r'^logout/$', views.logout_view, name = 'logout'),
+    url(r'^close_iteration/(?P<pid>[0-9]+)/$', views.m_close_iteration, name = 'close_iteration'),
+    url(r'^set_code_size/$', views.m_set_code_size, name = 'set_code_size'),
+    url(r'^delete_iteration/$', views.delete_iteration, name = 'delete_iteration'),
+    url(r'^add_iteration/$', views.add_iteration, name = 'add_iteration'),
+    url(r'^view_defects/(?P<pid>[0-9]+)/$', views.m_view_defects, name = 'view_defects'),
+    url(r'^m_defect_data_info/(?P<dpk>[0-9]+)/$', views.m_view_defect_information, name = 'm_view_defect_information'),
+    url(r'^delete_project/$', views.delete_project, name = 'delete_project'),
+]

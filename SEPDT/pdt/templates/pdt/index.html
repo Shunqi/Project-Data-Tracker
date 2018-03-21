@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Project Data Tracker</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/developer_menu_css" ref="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+    <div style="width:100%;background-color:black">
+      <h3 style="color:#cccccc;text-align:center;padding:15px;margin:0px">Developer Main Menu</h1>
+    </div>
+    
+    <div class="" style="background-color:#cccccc;margin:0px">
+	<!-- user name & ID -->
+      <p style="text-align:center"> Name:<span id="name">Muzzy</span>&nbsp&nbsp&nbspID:<span id="ID">303508</span></p>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-4" style="margin-top:30px">
+        <div>
+          <button class="btn btn-default btn-lg" style="display:block;margin:30px">Development</button>
+          <button class="btn btn-default btn-lg" style="display:block;margin:30px">Defect Removal</button>
+          <button class="btn btn-default btn-lg" style="display:block;margin:30px">Management</button>
+        </div>
+        </div>
+        <div class="col-xs-8" style="text-align:center">
+          <h2>Projects</h2>
+          <select multiple class="form-control" style="height:400px;margin-top:10px">
+		  
+		  {{ showProject }}
+		  <form action="{% url 'polls:vote' showProject.id %}" method="post">
+			{% csrf_token %}
+			{% for project in showProject.project_list.all %}
+				<input type="radio" name="project" id="project{{ forloop.counter }}" value="{{ project.id }}" />
+				<option for="project{{ forloop.counter }}">{{ project.name }}</option><br />
+			{% endfor %}
+			<input type="submit" value="Vote" />
+		  </form>
+		  
+		  <!-- project names
+            <option>Starcraft</option>
+            <option>Ingress</option>
+            <option>PDT</option>
+            <option>Heroes of The Storm</option>
+            <option>Legacy of the Void</option>
+            <option>Heart of the Swarm</option>
+            <option>Wing of Liberty</option>
+            <option>Brood War</option>
+			 -->
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="footer" style="background-color:#0080DB;padding:20px;width:100%;margin-top:15px;position:absolute;bottom:0px;text-align:center">
+        <button class="btn btn-default" style="margin-left:auto;margin-right:auto">Log Out</button>
+    </div>
+  </body>

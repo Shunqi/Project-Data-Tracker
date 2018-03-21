@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Project Data Tracker</title>
+{% load staticfiles %}
+    <!-- Bootstrap core CSS -->
+  	<link rel="icon" href={% static "pdt/favicon.ico" %} type="image/x-icon" />
+    <link href="{% static 'pdt/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'pdt/css/footer.css' %}" rel="stylesheet">
+    <link href="{% static 'pdt/css/developer_menu_css' %}" ref="stylesheet">
+    <script src="{% static 'pdt/js/jquery-1.11.3.min.js' %}"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <style>
+  .form_element{
+	margin-top:20px;
+	}
+  </style>
+  
+  <body>
+    <div style="width:100%;background-color:black">
+      <h3 style="color:#cccccc;text-align:center;padding:15px;margin:0px">Defect Info</h1>
+    </div>
+    
+    <div class="" style="background-color:#cccccc;margin:0px">
+      <p style="text-align:center"> Name:<span id="name">{{name}}</span>&nbsp&nbsp&nbspID:<span id="ID">{{ID}}
+    </div>
+    <div class="container">
+    	<h2>#{{defect.pk}} {{defect.get_data_type_display}}</h2>
+    	<h5>Reported by {{defect.developer.name}}</h5>
+		<div class="row">
+			<div class="col-sm-6">
+				<b><p class="form_element form_element">Injection Information</p></b>
+				<select class="form-control form_element" id="injection_phase" disabled>
+					<option value="">{{defect.inject_iteration.phase.get_phase_id_display}}</option>
+				</select>
+				<select class="form-control form_element" id="injection_iteration" disabled>
+					<option value="">{{defect.inject_iteration.iteration_id}}</option>
+				</select>
+			</div>
+			<div class="col-sm-6">
+				<b><p class="form_element form_element">Removal Infomation</p></b>
+				<select class="form-control form_element" id="removal_phase" disabled>
+					<option value="" num="1">{{defect.remove_iteration.phase.get_phase_id_display}}</option>
+				</select>
+				<select class="form-control form_element" id="removal_iteration" disabled>
+					<option value="">{{defect.remove_iteration.iteration_id}}</option>
+				</select>
+			</div>
+		</div>
+		<b><p class="form_element">Defect Description</p></b>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="input-group">
+					<span class="input-group-addon" id="basic-addon1"></span>
+					<input type="text" class="form-control" id="defect_description" placeholder="Defect Description" aria-describedby="basic-addon1" value="{{defect.description}}" disabled>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	
+    <footer class="footer" style="background-color:#0080DB;padding:20px;width:100%;margin-top:15px;position:absolute;bottom:0px;text-align:center">
+        <button class="btn btn-default" id="Return" style="margin-left:auto;margin-right:auto" onclick="window.history.back();">Return</button>
+    </footer>
+  </body>

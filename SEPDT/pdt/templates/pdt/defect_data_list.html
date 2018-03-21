@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Project Data Tracker</title>
+{% load staticfiles %}
+    <!-- Bootstrap core CSS -->
+    <link rel="icon" href={% static "pdt/favicon.ico" %} type="image/x-icon" />
+    <link href="{% static 'pdt/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'pdt/css/footer.css' %}" rel="stylesheet">
+    <link href="{% static 'pdt/css/developer_menu_css' %}" ref="stylesheet">
+    <script src="{% static 'pdt/js/jquery-1.11.3.min.js' %}"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body>
+    <div style="width:100%;background-color:black">
+      <h3 style="color:#cccccc;text-align:center;padding:15px;margin:0px">Management</h1>
+    </div>
+    
+    <div class="" style="background-color:#cccccc;margin:0px">
+      <p style="text-align:center"> Name:<span id="name">{{name}}</span>&nbsp&nbsp&nbspID:<span id="ID">{{ID}}</span></p>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-4" style="margin-top:30px">
+            <div>
+              <button class="btn btn-default btn-lg" id="Information" style="display:block;margin:30px">Information</button>
+            </div>
+          </div>
+        <div class="col-xs-8" style="text-align:center">
+          <h2>Defect Data</h2>
+            <select multiple class="form-control" id="defect" style="height:400px;margin-top:10px">
+                {% for item in defect_list %}
+                  <option value="{{item.pk}}">#{{item.pk}} {{item.get_data_type_display}}
+                {% endfor %}
+            </select>
+        </div>
+      </div>
+
+      <div style="border-top-width:10px;border-style:groove;padding:10px;text-align:center;margin-top:50px">
+        <div>
+          <button class="btn btn-default" id="pause_button" onclick="updatepause()" style="display:inline">Pause</button>
+        </div>
+        <h1 style="" id="Project_Timer">00:00:00</h1>
+      </div>
+    </div>
+    <footer class="footer" style="background-color:#0080DB;padding:20px;width:100%;margin-top:15px;position:absolute;bottom:0px;text-align:center">
+        <a href="/pdt/developer_menu" > <button class="btn btn-default" style="margin-left:auto;margin-right:auto">Return</button></a>
+    </footer>
+    
+    <script>
+      $("#Information").click(function(){
+        var value=document.getElementById("defect").value;
+        if (value!=[])
+        window.location.href = "/pdt/defect_data_info/"+value;
+        });
+    </script>
+
+    <script>
+      function uploadtimer(){
+        var postdata={
+            'time_value':timer,
+            'id':{{pid}},
+            'activity':'Management',
+            'csrfmiddlewaretoken': '{{ csrf_token }}'};
+        $.post("/pdt/updatetime/", postdata, function(response){});
+        };
+    </script>
+    
+    <script>
+      var timer={{time_used}};
+      var is_paused;
+      var pid={{pid}};
+      function Updatetimer(){
+        console.log(timer);
+        if(!is_paused)  timer+=1;
+        var nhour=Math.floor(timer/3600);
+        var nmin=Math.floor((timer%3600)/60);
+        var nsec=(timer%3600)%60;
+        if (nhour<10) nhour = "0" + nhour;
+        if (nmin<10) nmin = "0" + nmin;
+        if (nsec<10) nsec = "0" + nsec;
+        document.getElementById('Project_Timer').innerHTML=""+nhour+":"+nmin+":"+nsec+"";
+        uploadtimer();
+        }
+      function updatepause(){
+        is_paused=!is_paused;
+        var text;
+        if(is_paused){
+          uploadtimer();
+          text="Resume";
+        }
+        else text="Pause";
+        document.getElementById('pause_button').innerHTML=text;
+        }
+      window.onload=function(){
+        is_paused=false;  
+        console.log(timer);
+        setInterval(Updatetimer,1000);
+      }
+    </script>
+  </body>

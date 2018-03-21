@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Project Data Tracker</title>
+{% load staticfiles %}
+    <!-- Bootstrap core CSS -->
+	<link rel="icon" href={% static "pdt/favicon.ico" %} type="image/x-icon" />
+    <link href="{% static 'pdt/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'pdt/css/footer.css' %}" rel="stylesheet">
+    <link href="{% static 'pdt/css/developer_menu_css' %}" ref="stylesheet">
+    <script src="{% static 'pdt/js/jquery-1.11.3.min.js' %}"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <style>
+  .form_element{
+	margin-top:20px;
+	}
+  </style>
+  
+  <body>
+    <div style="width:100%;background-color:black">
+      <h3 style="color:#cccccc;text-align:center;padding:15px;margin:0px">New Project</h1>
+    </div>
+    
+    <div class="" style="background-color:#cccccc;margin:0px">
+      <p style="text-align:center"> Name:<span id="name">{{name}}</span>&nbsp&nbsp&nbspID:<span id="ID">{{ID}}</span></p>
+    </div>
+    <div class="container">
+		<b><p class="form_element">Project Name</p></b>
+        <div class="row">
+			<div class="col-md-12">
+			<div class="input-group">
+				<span class="input-group-addon" id="basic-addon1"></span>
+				<input type="text" class="form-control" id="Project_name" placeholder="Project Name" aria-describedby="basic-addon1" required autofocus>
+			</div>
+			</div>
+		</div>
+		<b><p class="form_element">Iteration Assignment</p></b>
+		<div class="row">
+			<div class="col-md-6 col-sm-6">
+				<div class="input-group">
+					<span class="input-group-addon" id="basic-addon1">Inception</span>
+					<input type="number" class="form-control" id="Inception_num" placeholder="" aria-describedby="basic-addon1" value="3">
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="input-group">
+					<span class="input-group-addon" id="basic-addon1">Elaboration</span>
+					<input type="number" class="form-control" id="Elaboration_num" placeholder="" aria-describedby="basic-addon1" value="3">
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="input-group">
+					<span class="input-group-addon" id="basic-addon1">Construction</span>
+					<input type="number" class="form-control" id="Construction_num" placeholder="" aria-describedby="basic-addon1" value="3">
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="input-group">
+					<span class="input-group-addon" id="basic-addon1">Transition</span>
+					<input type="number" class="form-control" id="Transition_num" placeholder="" aria-describedby="basic-addon1" value="3">
+				</div>
+			</div>
+		</div>
+		<b><p class="form_element">Project Description</p></b>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="input-group">
+					<span class="input-group-addon" id="basic-addon1"></span>
+					<input type="text" class="form-control" id="Project_description" placeholder="Project Description" aria-describedby="basic-addon1">
+				</div>
+			</div>
+		</div>
+		<b><p class="form_element">Developer Assignment</p></b>
+		<div class="row">
+			<div class="col-xs-5">
+				<select multiple class="form-control" id="Assigned" style="height:400px;">
+				</select>
+			</div>
+			<div class="col-xs-2" style="text-align:center">
+				<button class="btn btn-default btn-lg" id="Assign"><- Assign</button>
+				<button class="btn btn-default btn-lg" id="Remove" style="margin-top:50px">Remove -></button>
+			</div>
+			<div class="col-xs-5">
+				<select multiple class="form-control" id="Unassigned" style="height:400px;">
+					{% for item in d_list %}
+						<option value="{{item.employee_id}}">{{item.user.username}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	</div>
+	
+	
+	
+    <footer class="footer" style="background-color:#0080DB;padding:20px;width:100%;margin-top:15px;position:absolute;bottom:0px;text-align:center">
+        <button class="btn btn-default" id="Done" style="margin-left:auto;margin-right:auto">Done</button>
+        <button class="btn btn-default" id="Cancel" style="margin-left:auto;margin-right:auto" onclick="window.history.back();">Cancel</button>
+    </footer>
+    
+    <script>
+		$("#Assign").click(function(){
+			$("#Unassigned option:selected").each(function(){
+				$("#Assigned").append($(this));
+				});
+			});
+		$("#Remove").click(function(){
+			$("#Assigned option:selected").each(function(){
+				$("#Unassigned").append($(this));
+				});
+        });
+		$("#Done").click(function(){
+			var developer_list= [];
+			$("#Assigned option").each(function(){
+				developer_list.push($(this).val());
+				});
+			$.ajax({
+				method:"POST",
+				url:"/pdt/create_project/",
+				data:{
+					project_name: $("#Project_name").val(),
+					project_description: $("#Project_description").val(),
+					inception_num: $("#Inception_num").val(),
+					elaboration_num: $("#Elaboration_num").val(),
+					construction_num: $("#Construction_num").val(),
+					transition_num: $("#Transition_num").val(),
+					developer_list: developer_list,
+					csrfmiddlewaretoken: '{{ csrf_token }}'
+					},
+				error: function(xhr, ajaxOptions, thrownError){
+					$("body").html(xhr.responseText);
+					console.log(xhr.responseText);
+				},
+				success: function(data){
+					alert("Create Successfully!");
+					window.location.href="/pdt/manager_menu";
+				}
+					});
+		});
+    </script>
+  </body>
